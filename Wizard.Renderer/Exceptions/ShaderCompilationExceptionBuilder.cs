@@ -5,11 +5,10 @@ namespace Wizard.Renderer.Exceptions;
 
 public static class ShaderCompilationExceptionBuilder
 {
-    public static ShaderCompilationException Build(ShaderPart shaderPart)
+    public static ShaderCompilationException Build(int handle, string filePath)
     {
-        GL.GetShaderInfoLog(shaderPart.Handle, out var info);
+        GL.GetShaderInfoLog(handle, out var info);
         
-        var exception = new ShaderCompilationException(shaderPart.FilePath, info);
-        return exception;
+        return new ShaderCompilationException(filePath, info);;
     }
 }

@@ -5,9 +5,9 @@ namespace Wizard.Renderer.Exceptions;
 
 public static class ShaderLinkingExceptionBuilder
 {
-    public static ShaderLinkingException Build(Shader shader)
+    public static ShaderLinkingException Build(int handle)
     {
-        GL.GetProgramInfoLog(shader.Handle, out var info);
+        GL.GetProgramInfoLog(handle, out var info);
         
         var exception = new ShaderLinkingException(info);
         return exception;
