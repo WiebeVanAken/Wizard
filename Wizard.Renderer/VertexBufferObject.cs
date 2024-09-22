@@ -4,9 +4,9 @@ namespace Wizard.Renderer;
 
 public class VertexBufferObject
 {
-    public int Handle { get; private set; }
-    public BufferUsage BufferUsage { get; private set; }
-    public double[] DataBuffer { get; private set; }
+    public int Handle { get; }
+    public double[] DataBuffer { get; }
+    private BufferUsage BufferUsage { get; }
 
     public VertexBufferObject(double[] dataBuffer, BufferUsage bufferUsage)
     {

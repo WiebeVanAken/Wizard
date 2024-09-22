@@ -73,9 +73,3 @@ public class ShaderBuilder : IShaderBuilder
         return handle;
     }
 }
-
-public interface IShaderBuilder
-{
-    IShaderBuilder AddShaderPart(ShaderType shaderType, string shaderPart);
-    IShader? Build();
-}

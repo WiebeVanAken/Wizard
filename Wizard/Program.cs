@@ -9,8 +9,10 @@ using BufferUsage = OpenTK.Graphics.OpenGL.BufferUsage;
 using GameWindow window = new Window(800, 600, "Wizard");
 
 IShader? shader = null;
-var VBO = new VertexBufferObject([-0.5d, -0.5d, 0.0d, 0.5d, -0.5d, 0.0d, 0.0d, 0.5d, 0.0d], BufferUsage.StaticDraw);
-using VertexArrayObject VAO = new VertexArrayObject(VBO);
+using var vbo = new Buffer<double>(BufferTarget.ArrayBuffer, BufferUsage.StaticDraw,
+    [-0.5d, -0.5d, 0.0d, 1.0d, 0.0d, 0.0d, 0.5d, -0.5d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.5d, 0.0d, 0.0d, 0.0d, 1.0d]);
+using var vao = new VertexArrayObject(vbo);
+using var ebo = new ElementBufferObject([0, 1, 3, 1, 2, 3], BufferUsage.StaticDraw);
 
 window.Load += () =>
 {
@@ -19,6 +21,7 @@ window.Load += () =>
         .AddShaderPart(ShaderType.FragmentShader, "Shaders/basic.frag")
         .Build();
 };
+
 
 window.Unload += () =>
 {
@@ -30,7 +33,7 @@ window.RenderFrame += (FrameEventArgs e) =>
     GL.Clear(ClearBufferMask.ColorBufferBit);
 
     shader.Use();
-    GL.BindVertexArray(VAO.Handle);
+    GL.BindVertexArray(vao.Handle);
     GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
     
     window.SwapBuffers();
