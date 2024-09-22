@@ -5,24 +5,25 @@ namespace Wizard.Renderer.Shaders;
 
 public class ShaderBuilder : IShaderBuilder
 {
-    private readonly Dictionary<ShaderType, string> _shaderParts = new();
+    internal Dictionary<ShaderType, string> ShaderParts { get; } = new();
     
     public IShaderBuilder AddShaderPart(ShaderType shaderType, string filePath)
     {
-        _shaderParts.Add(shaderType, filePath);
+        ShaderParts.Add(shaderType, filePath);
         
         return this;
     }
 
-    public IShader? Build()
+    public IShader Build()
     {
-        var partHandles = new List<int>(_shaderParts.Count);
-        
-        if (_shaderParts.Count == 0)
+        if (ShaderParts.Count == 0)
         {
             throw new InvalidOperationException("No shader parts defined.");
         }
 
+        var partHandles = new List<int>(ShaderParts.Count);
+        
+#if GL_RUNTIME
         var handle = GL.CreateProgram();
         
         foreach (var part in _shaderParts)
@@ -46,6 +47,10 @@ public class ShaderBuilder : IShaderBuilder
             GL.DetachShader(handle, partHandle);
             GL.DeleteShader(partHandle);
         }
+        #else
+        
+        var handle = -1;
+#endif
         
         return new Shader(handle);
     }
