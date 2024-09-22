@@ -20,6 +20,11 @@ public class VertexArrayObject : IDisposable
         GL.EnableVertexAttribArray(1);
     }
 
+    public void Bind()
+    {
+        GL.BindVertexArray(Handle);
+    }
+
     public void Dispose()
     {
         GL.DeleteBuffer(Handle);

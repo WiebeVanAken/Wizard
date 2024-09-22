@@ -3,11 +3,11 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Wizard.Renderer;
 
-public class Buffer<T>(BufferTarget bufferTarget, BufferUsage bufferUsage, T[] data) : IDisposable where T : unmanaged
+public class Buffer<T> : IDisposable where T : unmanaged
 {
-    private int _handle = GL.GenBuffer();
-    private BufferUsage _bufferUsage = bufferUsage;
-    private T[] _data = data;
+    private readonly int _handle;
+    private BufferUsage _bufferUsage;
+    private T[] _data;
 
     public int Handle
     {
@@ -20,7 +20,6 @@ public class Buffer<T>(BufferTarget bufferTarget, BufferUsage bufferUsage, T[] d
             
             return _handle; 
         }
-        private set => _handle = value;
     }
     
     public BufferUsage BufferUsage
@@ -45,26 +44,49 @@ public class Buffer<T>(BufferTarget bufferTarget, BufferUsage bufferUsage, T[] d
         }
     }
 
-    public BufferTarget BufferTarget { get; } = bufferTarget;
+    public BufferTarget BufferTarget { get; }
 
-    private bool NeedsBuffering { get; set; }
-
-    public Buffer(BufferTarget bufferTarget, BufferUsage bufferUsage) : this(bufferTarget, bufferUsage, [])
+    internal bool NeedsBuffering { get; private set; } = true;
+    
+    public Buffer(BufferTarget bufferTarget, BufferUsage bufferUsage, T[] data)
     {
+#if GL_RUNTIME
         _handle = GL.GenBuffer();
+#endif
+        _bufferUsage = bufferUsage;
+        _data = data;
         BufferTarget = bufferTarget;
     }
 
-    private void BufferData()
+    public void BufferData()
     {
+        if (!NeedsBuffering)
+        {
+            return;
+        }
+        
+#if GL_RUNTIME
         GL.BindBuffer(BufferTarget, _handle);
         GL.BufferData(BufferTarget, ByteSize * _data.Length, _data, BufferUsage);
+#endif
         NeedsBuffering = false;
+    }
+    
+    public void Bind()
+    {
+        if (NeedsBuffering)
+        {
+            BufferData();
+        }
+        
+        GL.BindBuffer(BufferTarget, _handle);
     }
 
     private void ReleaseUnmanagedResources()
     {
+#if GL_RUNTIME
         GL.DeleteBuffer(_handle);
+#endif
     }
 
     public void Dispose()
