@@ -26,7 +26,7 @@ public class ShaderBuilder : IShaderBuilder
 #if GL_RUNTIME
         var handle = GL.CreateProgram();
         
-        foreach (var part in _shaderParts)
+        foreach (var part in ShaderParts)
         {
             var compiledPartHandle = CompileShaderPart(part.Key, part.Value);
             GL.AttachShader(handle, compiledPartHandle);
