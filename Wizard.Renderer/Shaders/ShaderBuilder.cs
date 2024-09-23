@@ -14,7 +14,7 @@ public class ShaderBuilder : IShaderBuilder
         return this;
     }
 
-    public IShader Build()
+    public Shader Build()
     {
         if (ShaderParts.Count == 0)
         {

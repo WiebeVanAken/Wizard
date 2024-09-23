@@ -46,7 +46,7 @@ public class BufferTest
         const bool expectedAfterEdit = true;
         
         // Act
-        sut.Data[0] = 1;
+        sut[0] = 1;
         var actualAfterEdit = sut.NeedsBuffering;
         
         // Assert
@@ -78,6 +78,21 @@ public class BufferTest
         
         // Act
         _ = sut.Handle;
+        var actual = sut.NeedsBuffering;
+        
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Buffer_Bind_Sets_NeedsBuffering_To_False_When_NeedsBuffering_Is_True()
+    {
+        // Arrange
+        var sut = new Buffer<int>(BufferTarget.ArrayBuffer, BufferUsage.StaticDraw, []);
+        const bool expected = false;
+        
+        // Act
+        sut.Bind();
         var actual = sut.NeedsBuffering;
         
         // Assert

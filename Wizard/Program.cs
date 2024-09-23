@@ -4,12 +4,11 @@ using OpenTK.Windowing.Desktop;
 using Wizard.Renderer;
 using Wizard.Renderer.Shaders;
 using Wizard.Renderer.Window;
-using Buffer = OpenTK.Graphics.OpenGL.Buffer;
 using BufferUsage = OpenTK.Graphics.OpenGL.BufferUsage;
 
 using GameWindow window = new Window(800, 600, "Wizard");
 
-IShader? shader = null;
+Shader shader = null;
 using var vbo = new Buffer<double>(BufferTarget.ArrayBuffer, BufferUsage.StaticDraw,
     [
             0.5d, 0.5d, 0.0d, 1.0d, 0.0d, 0.0d, 

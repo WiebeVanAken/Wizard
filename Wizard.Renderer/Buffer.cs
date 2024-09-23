@@ -8,7 +8,11 @@ public class Buffer<T> : IDisposable where T : unmanaged
     private readonly int _handle;
     private BufferUsage _bufferUsage;
     private T[] _data;
-
+    
+    public int ByteSize { get; } = Marshal.SizeOf<T>();
+    public T[] Data => _data;
+    public BufferTarget BufferTarget { get; }
+    internal bool NeedsBuffering { get; private set; } = true;
     public int Handle
     {
         get
@@ -21,7 +25,6 @@ public class Buffer<T> : IDisposable where T : unmanaged
             return _handle; 
         }
     }
-    
     public BufferUsage BufferUsage
     {
         get => _bufferUsage;
@@ -32,21 +35,15 @@ public class Buffer<T> : IDisposable where T : unmanaged
         }
     }
     
-    public int ByteSize { get; } = Marshal.SizeOf<T>();
-
-    public T[] Data
+    public T this[int index]
     {
-        get => _data;
-        private set
+        get => _data[index];
+        set
         {
+            _data[index] = value;
             NeedsBuffering = true;
-            _data = value;
         }
     }
-
-    public BufferTarget BufferTarget { get; }
-
-    internal bool NeedsBuffering { get; private set; } = true;
     
     public Buffer(BufferTarget bufferTarget, BufferUsage bufferUsage, T[] data)
     {
@@ -78,8 +75,10 @@ public class Buffer<T> : IDisposable where T : unmanaged
         {
             BufferData();
         }
-        
+
+#if GL_RUNTIME
         GL.BindBuffer(BufferTarget, _handle);
+#endif
     }
 
     private void ReleaseUnmanagedResources()

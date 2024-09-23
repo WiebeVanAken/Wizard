@@ -5,5 +5,5 @@ namespace Wizard.Renderer.Shaders;
 public interface IShaderBuilder
 {
     IShaderBuilder AddShaderPart(ShaderType shaderType, string shaderPart);
-    IShader Build();
+    Shader Build();
 }
